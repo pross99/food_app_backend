@@ -12,10 +12,10 @@ interface VendorDoc extends Document {
     email: string;
     password: string 
     salt: string;
-    serviceavailable: string;
+    serviceAvailable: boolean;
     coverImages: [string];
     rating: number;
-     // foods: any
+     foods: any
 
 }
 
@@ -30,13 +30,13 @@ const VendorSchema = new Schema({
     email: {type: String , required: true},
     password: {type: String , required: true},
     salt: {type: String , required: true},
-    serviceavailable: {type: Boolean},
+    serviceAvailable: {type: Boolean},
     coverImages: { type:[String] },
     rating: {type: Number},
-    // foods: [{
-    //     type: mongoose.SchemaTypes.ObjectId,
-    //     ref: 'food'
-    // }]
+     foods: [{
+         type: mongoose.SchemaTypes.ObjectId,
+         ref: 'food'
+     }]
 
 },{
     toJSON: {
@@ -53,6 +53,6 @@ const VendorSchema = new Schema({
 })
 
 
-const Vendor = mongoose.model<VendorDoc>('vendor', VendorSchema)
+const Vendor = mongoose.model<VendorDoc>('vendor', VendorSchema);
 
 export {Vendor}

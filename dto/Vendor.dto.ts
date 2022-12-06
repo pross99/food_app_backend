@@ -10,3 +10,27 @@ export interface CreateVendorInput {
     password: string 
 
 }
+
+export interface EditVendorInputs {
+    //Hvilke information må man update/ændre
+    name:string;
+    address: string;
+    phone: string;
+    foodTypes: [string]
+}
+
+
+export interface VendorLoginInputs {
+
+    email: string;
+    password: string;
+
+}
+
+export interface VendorPayload {
+    _id: string;
+    email: string;
+    name: string;
+    foodTypes: [string];
+    // mere?
+}
