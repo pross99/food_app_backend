@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response  } from "express";
-import { GetVendorProfile, UpdateVendorProfile, UpdateVendorSerive, VendorLogin } from "../controllers/Index";
+import { AddFood, GetVendorProfile, UpdateVendorProfile, UpdateVendorSerive, VendorLogin } from "../controllers/Index";
 import { Authenticate } from "../middlewares/CommonAuth";
 
 
@@ -15,6 +15,9 @@ router.use(Authenticate) // nu bruges Authenticate på understående endpoints
 router.get('/profile',  GetVendorProfile)
 router.patch('/profile', UpdateVendorProfile)
 router.patch('/service', UpdateVendorSerive)
+
+router.post('/food', AddFood)
+router.get('/foods')
 
 
 

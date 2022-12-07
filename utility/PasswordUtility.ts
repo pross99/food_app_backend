@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import { APP_SECRET } from '../config/Index';
 import { VendorPayload } from '../dto/Vendor.dto';
 import { Request } from 'express';
-import { AuthPayload } from '../dto/Auth.dot';
+import { AuthPayload } from '../dto/Auth.dto';
 
 export const GenerateSalt = async () => {
     return await bcrypt.genSalt()
@@ -21,8 +21,8 @@ export const ValidatePassword = async (enteredPassword: string, savedPassword: s
 }
 
 export const GenerateSignature = (payload: VendorPayload) => {
-
-    return jwt.sign(payload,APP_SECRET, {expiresIn: "1d"})
+// expiresIn virker ikke??
+    return jwt.sign(payload,APP_SECRET)
     
 
 }
@@ -36,12 +36,12 @@ export const ValidateSignaure = async (req : Request) => {
 
     if(signature) {
 
-        const paylaod = await jwt.verify(signature.split(' ')[1], APP_SECRET) as AuthPayload
+        const payload = await jwt.verify(signature.split(' ')[1], APP_SECRET) as AuthPayload; 
         // user fra middleware
-        req.user = paylaod;
+        req.user = payload;
 
         return true;
     }
      
     return false 
-}
+};

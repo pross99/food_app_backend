@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, request } from "express";
 import { RequiredPaths } from "mongoose/types/inferschematype";
+import { CreateFoodInputs } from "../dto/Food.dto";
 import { EditVendorInputs, VendorLoginInputs } from "../dto/Vendor.dto";
+import { Food } from "../models/Food";
 import { GenerateSignature, ValidatePassword } from "../utility/PasswordUtility";
 import { FindVendor } from "./AdminController";
 
@@ -112,3 +114,52 @@ export const UpdateVendorSerive = async (req:Request, res:Response, next: NextFu
 
 
 }
+
+export const AddFood = async (req:Request, res:Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    if(user){
+   // Skal finde vendor før tilføjelse af ny ret 
+
+   const {name, description, category, foodType, readyTime, price} = <CreateFoodInputs>req.body 
+   const vendor = await FindVendor(user._id)
+
+   if(vendor !== null){
+    const createdFood = await Food.create({
+        vendorId : vendor._id,
+        name: name,
+        description: description,
+        category: category,
+        foodType: foodType,
+        images: ['Vedikkeombilledeskalværeher.jpg '],
+        readyTime: readyTime,
+        price: price,
+        rating: 0
+    })
+// hvis retten er oprettet succesfuldt bliver den pushet til vendor food array og herefter skal vendor gemmes?
+    vendor.foods.push(createdFood);
+    const result = await vendor.save();
+
+    return res.json(result)
+
+   }
+          
+            
+        }
+
+
+    return res.json({"Besked" : "Der skete en fejl ved tilføjelse af retten "})}
+
+    export const GetFoods = async (req:Request, res:Response, next: NextFunction) => {
+
+        const user = req.user;
+    
+        if(user){
+       
+              
+                
+            }
+    
+    
+        return res.json({"Besked" : "ret/mad information ikke fundet "})}

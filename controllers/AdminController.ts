@@ -55,6 +55,7 @@ export const CreateVendor = async (req: Request, res:Response, next: NextFunctio
             rating: 0,
             serviceAvailable: false,
             coverImages: [],
+            foods: []
         })
 
 

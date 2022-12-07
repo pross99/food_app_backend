@@ -1,5 +1,5 @@
 import { Request, NextFunction, Response } from 'express'
-import {AuthPayload } from '../dto/Auth.dot'
+import {AuthPayload } from '../dto/Auth.dto'
 import { ValidateSignaure } from '../utility/PasswordUtility'
 
 
@@ -20,8 +20,8 @@ export const Authenticate = async (req: Request, res: Response, next: NextFuncti
     const validate = await ValidateSignaure(req);
 
     if(validate) {
-        next()
+        return next()
     }else{
         return res.json({"besked":"Bruger ikke godkendt"})
     }
-}
+};
