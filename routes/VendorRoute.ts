@@ -1,10 +1,34 @@
 import express, { NextFunction, Request, Response  } from "express";
-import { AddFood, GetVendorProfile, UpdateVendorProfile, UpdateVendorSerive, VendorLogin } from "../controllers/Index";
+import { AddFood, GetFoods, GetVendorProfile, UpdateVendorProfile, UpdateVendorSerive, VendorLogin } from "../controllers/Index";
 import { Authenticate } from "../middlewares/CommonAuth";
+
+//Multer til billede håndtering
+import multer from 'multer'
 
 
 
 const router = express.Router();
+
+const imageStorage = multer.diskStorage({
+    //vil gerne gemme billeder i image directory 
+    destination: function(req,file, cb){
+        cb(null, 'images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}--${file.originalname}`);
+},
+
+})
+
+
+
+
+
+const images = multer({storage: imageStorage}).array('images', 10) 
+  
+    
+
+
 
 // Login har ikke brug for authentication ? 
 router.post('/login',VendorLogin )
@@ -16,8 +40,8 @@ router.get('/profile',  GetVendorProfile)
 router.patch('/profile', UpdateVendorProfile)
 router.patch('/service', UpdateVendorSerive)
 
-router.post('/food', AddFood)
-router.get('/foods')
+router.post('/food', images, AddFood)
+router.get('/foods', GetFoods)
 
 
 

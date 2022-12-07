@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from 'express'
 import {AuthPayload } from '../dto/Auth.dto'
-import { ValidateSignaure } from '../utility/PasswordUtility'
+import { ValidateSignature } from '../utility/PasswordUtility'
 
 
 // Middleware håndterer function lige før den udfører actions og vier en response 
@@ -17,9 +17,9 @@ declare global {
 }
 
 export const Authenticate = async (req: Request, res: Response, next: NextFunction) => {
-    const validate = await ValidateSignaure(req);
+    const signature = await ValidateSignature(req);
 
-    if(validate) {
+    if(signature) {
         return next()
     }else{
         return res.json({"besked":"Bruger ikke godkendt"})

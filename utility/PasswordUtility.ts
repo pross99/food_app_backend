@@ -22,13 +22,13 @@ export const ValidatePassword = async (enteredPassword: string, savedPassword: s
 
 export const GenerateSignature = (payload: VendorPayload) => {
 // expiresIn virker ikke??
-    return jwt.sign(payload,APP_SECRET)
+    return jwt.sign(payload,APP_SECRET, {expiresIn: '90d'})
     
 
 }
 
 
-export const ValidateSignaure = async (req : Request) => {
+export const ValidateSignature = async (req : Request) => {
     //Får signature fra min request 
     //er den valid eller ej? Hvis den er, asign den specifikke paylaod til en request 
     // hvis ikker - return false 
@@ -44,4 +44,4 @@ export const ValidateSignaure = async (req : Request) => {
     }
      
     return false 
-};
+}
