@@ -1,33 +1,21 @@
-import express from 'express';
-import {AdminRoute,VendorRoute } from './routes/Index'
-import mongoose from 'mongoose'
-import bodyParser from 'body-parser';
-import { MONGO_URI } from './config/Index';
-import path from 'path'
-
-const app = express();
+import express from 'express'
+import App from './services/ExpressApp'
+import dbConnection from './services/Database'
 
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
-//for at acces image files
-app.use('/images', express.static(path.join(__dirname, 'images')))
+const StartServer = async () => {
+
+    const app = express()
+
+    await dbConnection()
+
+    await App(app);
+
+    app.listen(8000, () => {
+        console.log('Listening ti port 8000');
 
 
-app.use('/admin', AdminRoute);
-app.use('/vendor', VendorRoute)
+    });
+}
 
-
-
-
-mongoose.connect(MONGO_URI, {
-   
-}).then(result => {
-    console.log("DB forbundet")
-}).catch(err => console.log('error' + err))
-
-app.listen(8000, () => {
-
-    console.clear()
-    console.log('App is lis port 8000')
-})
+StartServer();
