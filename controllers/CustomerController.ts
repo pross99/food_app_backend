@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import {plainToClass} from 'class-transformer'
-import { CreatCustomerInputs, UserLoginInputs, EditCustomerProfileInputs } from "../dto/Customer.dto";
+import { CreatCustomerInputs, UserLoginInputs, EditCustomerProfileInput } from "../dto/Customer.dto";
 import {validate} from 'class-validator'
 import { GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } from "../utility/PasswordUtility";
 import { Customer } from "../models/Customer";
@@ -173,55 +173,54 @@ export const RequestOtp = async (req: Request, res: Response, next: NextFunction
     return res.status(400).json({ msg: 'Error with Requesting OTP'});
 }
 
-export const GetCustomerProfile = async (req: Request, res:Response, next: NextFunction) => {
-   
-   
-    const customer = req.user;
+export const GetCustomerProfile = async (req: Request, res: Response, next: NextFunction) => {
 
+    const customer = req.user;
  
-    if(customer) {
-    const profile = await Customer.findById(customer._id);
+    if(customer){
+        
+        const profile =  await Customer.findById(customer._id);
+        
+        if(profile){
+             
+            return res.status(201).json(profile);
+        }
 
-    if(profile) {
-
-
-        res.status(201).json(profile)
     }
-
-
-}
-return res.status(400).json({ msg: 'Kunne ikke hente profil'});
+    return res.status(400).json({ msg: 'Kunne ikke hente profil'});
 }
 
 
 
-export const EditCustomerProfile = async (req: Request, res:Response, next: NextFunction) => {
+export const EditCustomerProfile = async (req: Request, res: Response, next: NextFunction) => {
+
+
     const customer = req.user;
 
-    const customerInputs = plainToClass(EditCustomerProfileInputs, req.body)
+    const customerInputs = plainToClass(EditCustomerProfileInput, req.body);
 
-    const customerInputs = await validate(customerInputs, {validationError: {target: false}})
+    const validationError = await validate(customerInputs, {validationError: { target: false}})
 
-    if(validationError.length > 0 ) {
-        return res.status(400).json(validationError)
+    if(validationError.length > 0){
+        return res.status(400).json(validationError);
     }
 
+    const { firstName, lastName, address } = customerInputs;
 
-    const {firstName, lastName, address} = customerInputs
+    if(customer){
+        
+        const profile =  await Customer.findById(customer._id);
+        
+        if(profile){
+            profile.firstName = firstName;
+            profile.lastName = lastName;
+            profile.address = address;
+            const result = await profile.save()
+            
+            return res.status(201).json(result);
+        }
 
-    if(customer) {
-    const profile = await Customer.findById(customer._id);
-
-    if(profile) {
-
-        profile.firstName = firstName;
-        profile.lastName = lastName;
-        profile.address = address;
-        const result = await profile.save()
-
-        res.status(201).json(result)
     }
-}
-return res.status(400).json({ msg: 'Fejl ved opdatering af profil'});
+    return res.status(400).json({ msg: 'Error while Updating Profile'});
 
 }
